@@ -7,6 +7,7 @@
 * Fix a bug in file ingestion caused by incorrect file number allocation when the number of column families involved in the ingestion exceeds 2.
 * Fix a bug when format_version=3, partitioned fitlers, and prefix search are used in conjunction. The bug could result into Seek::(prefix) returning NotFound for an existing prefix.
 * Revert the feature "Merging iterator to avoid child iterator reseek for some cases (#5286)" since it might cause strong results when reseek happens with a different iterator upper bound.
+* Fix a bug causing a crash during ingest external file when background compaction cause severe error (file not found).
 ### New Features
 * Introduced DBOptions::max_write_batch_group_size_bytes to configure maximum limit on number of bytes that are written in a single batch of WAL or memtable write. It is followed when the leader write size is larger than 1/8 of this limit.
 * VerifyChecksum() by default will issue readahead. Allow ReadOptions to be passed in to those functions to override the readhead size. For checksum verifying before external SST file ingestion, a new option IngestExternalFileOptions.verify_checksums_readahead_size, is added for this readahead setting.
@@ -21,6 +22,7 @@
 * Deprecate `snap_refresh_nanos` option.
 * Added DisableManualCompaction/EnableManualCompaction to stop and resume manual compaction.
 * Add TryCatchUpWithPrimary() to StackableDB in non-LITE mode.
+* Add a new Env::LoadEnv() overloaded function to return a shared_ptr to Env.
 ### Performance Improvements
 * Improve the speed of the MemTable Bloom filter, reducing the write overhead of enabling it by 1/3 to 1/2, with similar benefit to read performance.
 
